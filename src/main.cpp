@@ -1,0 +1,29 @@
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+
+#include <iostream>
+
+#include "window.hpp"
+
+
+int main() {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE,
+            GLFW_OPENGL_CORE_PROFILE);
+
+    Window window;
+    
+    GLenum error_code = glewInit();
+    if (error_code) {
+        std::cout << "Error initializing glew" << std::endl;
+        return -1;
+    }
+
+    window.run();
+
+    glfwTerminate();
+    return 0;
+}
