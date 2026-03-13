@@ -1,11 +1,13 @@
 #version 330 core
 
 in vec3 Normal;
+in vec2 TexCoord;
 
 out vec4 FragColor;
 
+uniform sampler2D diffuse_texture;
+uniform sampler2D specular_texture;
+
 void main() {
-    vec3 light = normalize(vec3(-0.5, -0.5, -0.5));
-    float shaded = normalize(dot(light, Normal));
-    FragColor = vec4(Normal, 1.0);
+    FragColor = texture(diffuse_texture, TexCoord);
 }

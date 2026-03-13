@@ -12,6 +12,13 @@ using namespace std;
 struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
+    glm::vec2 textureCoords;
+};
+
+struct Texture {
+    unsigned int id;
+    aiTextureType type;
+    std::string path;
 };
 
 class Mesh {
@@ -20,6 +27,7 @@ class Mesh {
         unsigned int _vbo;
         unsigned int _ebo;
         unsigned int _indicesCount;
+
     public:
         Mesh(aiMesh* mesh, const aiScene* scene);
         void draw(Shader& shader);

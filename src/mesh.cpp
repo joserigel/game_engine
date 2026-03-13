@@ -20,6 +20,17 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
             mesh->mNormals[i].y,
             mesh->mNormals[i].z
             );
+        
+        // Technically up to AI_MAX_NUMBER_OF_TEXTURECOORDS is allowed, 
+        // but we only look at 1
+        if (mesh->mTextureCoords[0]) {
+            vertex.textureCoords = glm::vec2(
+                mesh->mTextureCoords[0][i].x,
+                mesh->mTextureCoords[0][i].y
+                );
+        } else {
+            vertex.textureCoords = glm::vec2(0, 0);
+        }
         vertices.push_back(vertex);
     }
 
@@ -64,6 +75,10 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
         1, 3, GL_FLOAT, GL_FALSE, 
         sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(
+        2, 2, GL_FLOAT, GL_FALSE, 
+        sizeof(Vertex), (void*)offsetof(Vertex, textureCoords));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }
