@@ -12,7 +12,7 @@ class Camera {
         float _aspectRatio;
 
         glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f);
-        float _pitch = 180.0f;
+        float _pitch = 0;
         float _yaw = 0;
 
         float _lookSensitivity = 0.1f;

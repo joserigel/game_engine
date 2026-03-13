@@ -38,7 +38,6 @@ void Camera::mouseCallback(double xPos, double yPos) {
 
     _pitch -= yDelta * _lookSensitivity;
     _yaw -= xDelta * _lookSensitivity;
-
     _pitch = glm::clamp(_pitch, -89.0f, 89.0f);
 
     _view = glm::lookAt(
