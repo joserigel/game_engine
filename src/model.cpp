@@ -13,6 +13,7 @@
 #include "stb_image.h"
 
 
+
 using namespace std;
 
 Texture loadTextureFromFile(const char* path) { 
@@ -54,12 +55,8 @@ void Model::_processTexture(aiMesh* mesh, const aiScene* scene, string& director
 {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     
-    const aiTextureType supportedTextureTypes[2] = {
-        aiTextureType_DIFFUSE,
-        aiTextureType_SPECULAR
-    };
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < NUM_SUPPORTED_TEXTURE_TYPES; i++) {
         aiTextureType type = supportedTextureTypes[i];
         if (material->GetTextureCount(type) > 0 &&
                 _textures.find(type) == _textures.end()) {
@@ -107,21 +104,18 @@ Model::Model(const char* path) {
 void Model::draw(Shader& shader) {
     shader.use();
 
+    for (int i = 0; i < NUM_SUPPORTED_TEXTURE_TYPES; i++) {
+        aiTextureType type = supportedTextureTypes[i];
 
-    if (_textures.find(aiTextureType_DIFFUSE) != _textures.end()) {
-        unsigned int location = shader.uniformLocation("diffuse_texture");
-        Texture texture = _textures[aiTextureType_DIFFUSE];
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture.id);
-        glUniform1i(location, 0);
-    }
-
-    if (_textures.find(aiTextureType_SPECULAR) != _textures.end()) {
-        unsigned int location = shader.uniformLocation("specular_texture");
-        Texture texture = _textures[aiTextureType_SPECULAR];
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture.id);
-        glUniform1i(location, 1);
+        if (_textures.find(type) != _textures.end()) {
+            string typeStr = aiTextureTypeToString(type);
+            std::transform(typeStr.begin(), typeStr.end(), typeStr.begin(), ::tolower);
+            unsigned int location = shader.uniformLocation(string(typeStr + "_texture").c_str());
+            Texture texture = _textures[type];
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, texture.id);
+            glUniform1i(location, i);
+        }
     }
 
     for (Mesh& mesh : _meshes) {

@@ -9,6 +9,13 @@
 
 using namespace std;
 
+#define NUM_SUPPORTED_TEXTURE_TYPES 2
+
+const aiTextureType supportedTextureTypes[NUM_SUPPORTED_TEXTURE_TYPES] = {
+    aiTextureType_DIFFUSE,
+    aiTextureType_SPECULAR
+};
+
 class Model {
     private:
         vector<Mesh> _meshes;
