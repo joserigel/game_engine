@@ -5,8 +5,10 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-void Window::sizeCallback(GLFWwindow* window, int height, int width) {
+void Window::sizeCallback(GLFWwindow* window, int width, int height) {
     Window* windowObject = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    glViewport(0, 0, width, height);
+    windowObject->_camera.setAspectRatio(width, height);
 }
 
 void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {

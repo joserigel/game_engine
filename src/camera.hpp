@@ -16,7 +16,7 @@ class Camera {
         float _yaw = 0;
 
         float _lookSensitivity = 0.1f;
-        float _moveSensitivity = 0.1f;
+        float _moveSensitivity = 0.01f;
 
         double _lastX;
         double _lastY;

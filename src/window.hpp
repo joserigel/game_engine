@@ -16,7 +16,7 @@ class Window {
         Camera _camera;
 
         static void sizeCallback(
-            GLFWwindow* window, int height, int width);
+            GLFWwindow* window, int width, int height);
         static void cursorPosCallback(
             GLFWwindow* window, double xpos, double ypos);
     public:

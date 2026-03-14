@@ -24,6 +24,13 @@ Camera::Camera(float fov, int width, int height) : _fov(fov) {
             glm::vec3(0, 1.0f, 0));
 }
 
+
+void Camera::setAspectRatio(int width, int height) {
+    _aspectRatio = (float)width/(float)height;
+    _projection = glm::perspective(
+            glm::radians(_fov), _aspectRatio, 0.1f, 100.0f);
+}
+
 void Camera::mouseCallback(double xPos, double yPos) {
     if (_firstMouse) {
         _lastX = xPos;
