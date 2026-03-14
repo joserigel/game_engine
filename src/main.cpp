@@ -16,12 +16,6 @@ int main() {
 
     Window window;
     
-    GLenum error_code = glewInit();
-    if (error_code) {
-        std::cout << "Error initializing glew" << std::endl;
-        return -1;
-    }
-
     window.run();
 
     glfwTerminate();
