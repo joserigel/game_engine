@@ -26,7 +26,7 @@ class Camera {
         void setAspectRatio(int width, int height);
         void mouseCallback(double xpos, double ypos);
         void keyboardCallback(GLFWwindow* window, float delta);
-        glm::mat4 matrix();
+        glm::mat4 matrix(bool translation = true);
 };
 
 #endif

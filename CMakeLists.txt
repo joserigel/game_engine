@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(assimp)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
-file(GLOB_RECURSE GAME_ENGINE_SOURCES "src/*.hpp" "src/*.cpp")
+file(GLOB_RECURSE GAME_ENGINE_SOURCES "src/*.h" "src/*.hpp" "src/*.cpp")
 
 add_executable(GameEngine ${GAME_ENGINE_SOURCES})
 

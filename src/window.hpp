@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "camera.hpp"
+#include "cubemap.hpp"
 #include "shader.hpp"
 #include "model.hpp"
 
@@ -27,6 +28,7 @@ class Window {
 
         unique_ptr<Shader> _objectShader;
         unique_ptr<Shader> _screenShader;
+        unique_ptr<CubeMap> _skybox;
 
         vector<Model> _models;
 

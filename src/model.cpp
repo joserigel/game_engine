@@ -8,11 +8,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-// TODO: move this to a common file
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-
 
 using namespace std;
 

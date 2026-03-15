@@ -46,6 +46,14 @@ Window::Window() :
 
     _objectShader = make_unique<Shader>("../shaders/basic.vert", "../shaders/basic.frag");
     _screenShader = make_unique<Shader>("../shaders/screen.vert", "../shaders/screen.frag");
+    _skybox = make_unique<CubeMap>(
+        "../models/skybox/left.jpg",
+        "../models/skybox/right.jpg",
+        "../models/skybox/bottom.jpg",
+        "../models/skybox/top.jpg",
+        "../models/skybox/front.jpg",
+        "../models/skybox/back.jpg"
+        );
     _models.emplace_back("../models/backpack/backpack.obj");
 
     // Set cursor callback
@@ -110,7 +118,50 @@ Window::Window() :
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-}
+}float skyboxVertices[] = {
+    // positions          
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+    -1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f
+};
 
 Window::~Window() {
 }
@@ -127,9 +178,14 @@ void Window::_keyboardEvent(float delta) {
 
 void Window::_drawScene() {
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
-    glEnable(GL_DEPTH_TEST);
+
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glm::mat4 matrix = _camera.matrix(false);
+    _skybox->draw(matrix);
+
+    glEnable(GL_DEPTH_TEST);
     _objectShader->use();
     unsigned int projectionLoc = _objectShader->uniformLocation("projection");
     glUniformMatrix4fv(
@@ -157,13 +213,16 @@ void Window::run() {
 
     float lastTime = glfwGetTime();
 
+
     while (!glfwWindowShouldClose(_id)) {
         float currentTime = glfwGetTime();
         float delta = currentTime - lastTime; 
         _keyboardEvent(delta);
 
+
         _drawScene();
         _drawScreen();
+
 
         glfwPollEvents();
         glfwSwapBuffers(_id);
