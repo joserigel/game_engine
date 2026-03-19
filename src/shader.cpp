@@ -41,7 +41,7 @@ Shader::Shader(
         char infoLog[1024];
         glGetShaderInfoLog(vertexShader, sizeof(infoLog), 
             nullptr, infoLog);
-        throw runtime_error(string(infoLog));
+        throw runtime_error("File Error " + string(vertexPath) + ": "+string(infoLog));
     }
 
 
@@ -63,7 +63,7 @@ Shader::Shader(
         char infoLog[1024];
         glGetShaderInfoLog(fragmentShader, sizeof(infoLog),
             nullptr, infoLog);
-        throw runtime_error(string(infoLog));
+        throw runtime_error("File Error " + string(fragmentPath) + ": "+string(infoLog));
     }
 
     _program = glCreateProgram();

@@ -84,6 +84,10 @@ void Camera::keyboardCallback(GLFWwindow* window, float deltaTime) {
         up);
 }
 
+glm::vec3 Camera::position() {
+    return _position;
+}
+
 glm::mat4 Camera::matrix(bool translation) {
     if (translation) {
         return _projection * _view;

@@ -44,7 +44,7 @@ Window::Window() :
     }
 
 
-    _objectShader = make_unique<Shader>("../shaders/basic.vert", "../shaders/basic.frag");
+    _objectShader = make_unique<Shader>("../shaders/reflection.vert", "../shaders/reflection.frag");
     _screenShader = make_unique<Shader>("../shaders/screen.vert", "../shaders/screen.frag");
     _skybox = make_unique<CubeMap>(
         "../models/skybox/left.jpg",
@@ -54,6 +54,9 @@ Window::Window() :
         "../models/skybox/front.jpg",
         "../models/skybox/back.jpg"
         );
+    _objectShader->use();
+    unsigned int skyboxLoc = _objectShader->uniformLocation("skybox");
+    glUniform1i(skyboxLoc, 0);
     _models.emplace_back("../models/backpack/backpack.obj");
 
     // Set cursor callback
@@ -187,9 +190,14 @@ void Window::_drawScene() {
 
     glEnable(GL_DEPTH_TEST);
     _objectShader->use();
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, _skybox->id());
     unsigned int projectionLoc = _objectShader->uniformLocation("projection");
     glUniformMatrix4fv(
             projectionLoc, 1, GL_FALSE, glm::value_ptr(_camera.matrix()));
+    unsigned int camPosLoc = _objectShader->uniformLocation("cameraPosition");
+    glm::vec3 cameraPosition = _camera.position();
+    glUniform3fv(camPosLoc, 1, glm::value_ptr(cameraPosition));
     for (Model& model : _models) {
         model.draw(*_objectShader);
     }
@@ -219,10 +227,8 @@ void Window::run() {
         float delta = currentTime - lastTime; 
         _keyboardEvent(delta);
 
-
         _drawScene();
         _drawScreen();
-
 
         glfwPollEvents();
         glfwSwapBuffers(_id);
