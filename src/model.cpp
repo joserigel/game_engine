@@ -105,12 +105,15 @@ void Model::draw(Shader& shader) {
 
         if (_textures.find(type) != _textures.end()) {
             string typeStr = aiTextureTypeToString(type);
-            std::transform(typeStr.begin(), typeStr.end(), typeStr.begin(), ::tolower);
-            unsigned int location = shader.uniformLocation(string(typeStr + "_texture").c_str());
+            std::transform(
+                    typeStr.begin(), 
+                    typeStr.end(), typeStr.begin(), ::tolower);
             Texture texture = _textures[type];
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, texture.id);
-            glUniform1i(location, i);
+            shader.setInt(
+                string(typeStr + "_texture").c_str(),
+                i);
         }
     }
 

@@ -14,9 +14,10 @@ unsigned int CubeMap::id() {
 
 void CubeMap::draw(glm::mat4& matrix) {
     glDepthMask(GL_FALSE);
+    
     _shader.use();
-    unsigned int projLoc = _shader.uniformLocation("projection");
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+    _shader.setMat4("projection", matrix);
+
     glBindVertexArray(_vao);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, _texture);
@@ -119,8 +120,7 @@ CubeMap::CubeMap(
     glEnableVertexAttribArray(0);
 
     _shader.use();
-    unsigned int skyboxLoc = _shader.uniformLocation("skybox");
-    glUniform1i(skyboxLoc, 0);
+    _shader.setInt("skybox", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, _texture);

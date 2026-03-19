@@ -44,7 +44,7 @@ Window::Window() :
     }
 
 
-    _objectShader = make_unique<Shader>("../shaders/reflection.vert", "../shaders/reflection.frag");
+    _objectShader = make_unique<Shader>("../shaders/basic.vert", "../shaders/basic.frag");
     _screenShader = make_unique<Shader>("../shaders/screen.vert", "../shaders/screen.frag");
     _skybox = make_unique<CubeMap>(
         "../models/skybox/left.jpg",
@@ -192,12 +192,13 @@ void Window::_drawScene() {
     _objectShader->use();
     glActiveTexture(0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, _skybox->id());
-    unsigned int projectionLoc = _objectShader->uniformLocation("projection");
-    glUniformMatrix4fv(
-            projectionLoc, 1, GL_FALSE, glm::value_ptr(_camera.matrix()));
-    unsigned int camPosLoc = _objectShader->uniformLocation("cameraPosition");
-    glm::vec3 cameraPosition = _camera.position();
-    glUniform3fv(camPosLoc, 1, glm::value_ptr(cameraPosition));
+
+    auto projection = _camera.matrix();
+    _objectShader->setMat4("projection", projection);
+
+    auto cameraPosition = _camera.position();
+    _objectShader->setVec3("cameraPosition", cameraPosition);
+
     for (Model& model : _models) {
         model.draw(*_objectShader);
     }

@@ -4,6 +4,8 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <fstream>
 
 using namespace std;
@@ -14,6 +16,37 @@ void Shader::use() {
 
 unsigned int Shader::uniformLocation(const char* name) {
     return glGetUniformLocation(_program, name);
+}
+
+
+void Shader::setMat3(const char* name, glm::mat3& value) {
+    unsigned int location = glGetUniformLocation(_program, name);
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::setMat4(const char* name, glm::mat4& value) {
+    unsigned int location = glGetUniformLocation(_program, name);
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void Shader::setVec3(const char* name, glm::vec3& value) {
+    unsigned int location = glGetUniformLocation(_program, name);
+    glUniform3fv(location, 1, glm::value_ptr(value));
+}
+
+void Shader::setVec4(const char* name, glm::vec4& value) {
+    unsigned int location = glGetUniformLocation(_program, name);
+    glUniform4fv(location, 1, glm::value_ptr(value));
+}
+
+void Shader::setInt(const char* name, int value) {
+    unsigned int location = glGetUniformLocation(_program, name);
+    glUniform1i(location, value);
+}
+
+void Shader::setFloat(const char* name, float value) {
+    unsigned int location = glGetUniformLocation(_program, name);
+    glUniform1f(location, value);
 }
 
 Shader::Shader(
