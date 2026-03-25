@@ -47,7 +47,7 @@ Texture loadTextureFromFile(const char* path) {
     return texture;
 }
 
-void Model::_processTexture(aiMesh* mesh, const aiScene* scene, string& directory) 
+void Model::processTexture_(aiMesh* mesh, const aiScene* scene, string& directory) 
 {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     
@@ -55,26 +55,26 @@ void Model::_processTexture(aiMesh* mesh, const aiScene* scene, string& director
     for (int i = 0; i < NUM_SUPPORTED_TEXTURE_TYPES; i++) {
         aiTextureType type = supportedTextureTypes[i];
         if (material->GetTextureCount(type) > 0 &&
-                _textures.find(type) == _textures.end()) {
+                textures_.find(type) == textures_.end()) {
             aiString filename;
             material->GetTexture(type, 0, &filename);
             string path = directory + "/" + filename.C_Str();
-            _textures[type] = loadTextureFromFile(path.c_str());
+            textures_[type] = loadTextureFromFile(path.c_str());
         }
     }
 }
 
-void Model::_processNode(
+void Model::processNode_(
     aiNode* node, const aiScene* scene, string& directory
 ) {
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        _meshes.emplace_back(mesh, scene);
-        _processTexture(mesh, scene, directory);
+        meshes_.emplace_back(mesh, scene);
+        processTexture_(mesh, scene, directory);
     }
 
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
-        _processNode(node->mChildren[i], scene, directory);
+        processNode_(node->mChildren[i], scene, directory);
     }
 }
 
@@ -93,7 +93,7 @@ Model::Model(const char* path) {
         return;
     }
 
-    _processNode(scene->mRootNode, scene, directory);
+    processNode_(scene->mRootNode, scene, directory);
 }
 
 
@@ -103,12 +103,12 @@ void Model::draw(Shader& shader) {
     for (int i = 0; i < NUM_SUPPORTED_TEXTURE_TYPES; i++) {
         aiTextureType type = supportedTextureTypes[i];
 
-        if (_textures.find(type) != _textures.end()) {
+        if (textures_.find(type) != textures_.end()) {
             string typeStr = aiTextureTypeToString(type);
             std::transform(
                     typeStr.begin(), 
                     typeStr.end(), typeStr.begin(), ::tolower);
-            Texture texture = _textures[type];
+            Texture texture = textures_[type];
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, texture.id);
             shader.setInt(
@@ -117,7 +117,7 @@ void Model::draw(Shader& shader) {
         }
     }
 
-    for (Mesh& mesh : _meshes) {
+    for (Mesh& mesh : meshes_) {
         mesh.draw(shader);
     }
 }

@@ -18,11 +18,11 @@ const aiTextureType supportedTextureTypes[NUM_SUPPORTED_TEXTURE_TYPES] = {
 
 class Model {
     private:
-        vector<Mesh> _meshes;
-        unordered_map<aiTextureType, Texture> _textures;
+        vector<Mesh> meshes_;
+        unordered_map<aiTextureType, Texture> textures_;
 
-        void _processNode(aiNode* node, const aiScene* scene, string& directory);
-        void _processTexture(aiMesh* mesh, const aiScene* scene, string& directory);
+        void processNode_(aiNode* node, const aiScene* scene, string& directory);
+        void processTexture_(aiMesh* mesh, const aiScene* scene, string& directory);
     public:
         Model(const char* path);
         void draw(Shader& shader);

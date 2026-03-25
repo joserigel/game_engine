@@ -23,10 +23,10 @@ struct Texture {
 
 class Mesh {
     private:
-        unsigned int _vao;
-        unsigned int _vbo;
-        unsigned int _ebo;
-        unsigned int _indicesCount;
+        unsigned int vao_;
+        unsigned int vbo_;
+        unsigned int ebo_;
+        unsigned int indicesCount_;
 
     public:
         Mesh(aiMesh* mesh, const aiScene* scene);

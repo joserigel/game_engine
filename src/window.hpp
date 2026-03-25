@@ -18,27 +18,27 @@ using namespace std;
 
 class Window {
     private:
-        GLFWwindow* _id;
-        void _keyboardEvent(float delta);
-        Camera _camera;
-        unsigned int _screenTexture;
-        unsigned int _frameBuffer;
-        unsigned int _rbo;
-        unsigned int _screenVAO;
+        GLFWwindow* id_;
+        void keyboardEvent_(float delta);
+        Camera camera_;
+        unsigned int screenTexture_;
+        unsigned int frameBuffer_;
+        unsigned int rbo_;
+        unsigned int screenVAO_;
 
-        unique_ptr<Shader> _objectShader;
-        unique_ptr<Shader> _screenShader;
-        unique_ptr<CubeMap> _skybox;
+        unique_ptr<Shader> objectShader_;
+        unique_ptr<Shader> screenShader_;
+        unique_ptr<CubeMap> skybox_;
 
-        vector<Model> _models;
+        vector<Model> models_;
 
-        static void _sizeCallback(
+        static void sizeCallback_(
             GLFWwindow* window, int width, int height);
-        static void _cursorPosCallback(
+        static void cursorPosCallback_(
             GLFWwindow* window, double xpos, double ypos);
 
-        void _drawScene();
-        void _drawScreen();
+        void drawScene_();
+        void drawScreen_();
     public:
         ~Window();
         Window();

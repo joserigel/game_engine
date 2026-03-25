@@ -42,15 +42,15 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
         }
     }
 
-    _indicesCount = indices.size();
+    indicesCount_ = indices.size();
 
     // Generate Vertex Array
-    glGenVertexArrays(1, &_vao);
-    glBindVertexArray(_vao);
+    glGenVertexArrays(1, &vao_);
+    glBindVertexArray(vao_);
 
     // Generate Vertex Buffer Object
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glGenBuffers(1, &vbo_);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
     glBufferData(
         GL_ARRAY_BUFFER, 
         vertices.size() * sizeof(Vertex), 
@@ -58,8 +58,8 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
         GL_STATIC_DRAW);
     
     // Generate Element Buffer Object
-    glGenBuffers(1, &_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+    glGenBuffers(1, &ebo_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
         indices.size() * sizeof(unsigned int),
@@ -84,10 +84,10 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
 }
 
 void Mesh::draw(Shader& shader) {
-    glBindVertexArray(_vao);
+    glBindVertexArray(vao_);
     glDrawElements(
         GL_TRIANGLES, 
-        _indicesCount,
+        indicesCount_,
         GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

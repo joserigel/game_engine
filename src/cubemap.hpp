@@ -7,9 +7,9 @@
 
 class CubeMap {
     private:
-        unsigned int _texture;
-        unsigned int _vao;
-        Shader _shader;
+        unsigned int texture_;
+        unsigned int vao_;
+        Shader shader_;
     public:
         unsigned int id();
         void draw(glm::mat4& matrix);

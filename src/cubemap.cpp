@@ -9,18 +9,18 @@
 #include "stb_image.h"
 
 unsigned int CubeMap::id() {
-    return _texture;
+    return texture_;
 }
 
 void CubeMap::draw(glm::mat4& matrix) {
     glDepthMask(GL_FALSE);
     
-    _shader.use();
-    _shader.setMat4("projection", matrix);
+    shader_.use();
+    shader_.setMat4("projection", matrix);
 
-    glBindVertexArray(_vao);
+    glBindVertexArray(vao_);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, _texture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
 }
@@ -32,10 +32,10 @@ CubeMap::CubeMap(
     const char* top,
     const char* front,
     const char* back
-) : _shader("../shaders/skybox.vert", "../shaders/skybox.frag")
+) : shader_("../shaders/skybox.vert", "../shaders/skybox.frag")
 {
-    glGenTextures(1, &_texture);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, _texture);
+    glGenTextures(1, &texture_);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_);
 
     int width, height, nrChannels;
     unsigned char* data;
@@ -109,8 +109,8 @@ CubeMap::CubeMap(
          1.0f, -1.0f,  1.0f
     };
 
-    glGenVertexArrays(1, &_vao);
-    glBindVertexArray(_vao);
+    glGenVertexArrays(1, &vao_);
+    glBindVertexArray(vao_);
 
     unsigned int vbo;
     glGenBuffers(1, &vbo);
@@ -119,10 +119,10 @@ CubeMap::CubeMap(
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
-    _shader.use();
-    _shader.setInt("skybox", 0);
+    shader_.use();
+    shader_.setInt("skybox", 0);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, _texture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_);
     
 }

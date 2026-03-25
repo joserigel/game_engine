@@ -5,7 +5,7 @@
 
 class Shader {
     private:
-        unsigned int _program;
+        unsigned int program_;
     public:
         void use();
         unsigned int uniformLocation(const char* name);

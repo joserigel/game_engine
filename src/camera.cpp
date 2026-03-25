@@ -14,87 +14,87 @@ inline glm::vec3 front(float pitch, float yaw) {
     return res;
 }
 
-Camera::Camera(float fov, int width, int height) : _fov(fov) {
-    _aspectRatio = (float)width/(float)height;
-    _projection = glm::perspective(
-            glm::radians(fov), _aspectRatio, 0.1f, 100.0f);
-    _view = glm::lookAt(
-            _position, 
-            _position + front(_pitch, _yaw), 
+Camera::Camera(float fov, int width, int height) : fov_(fov) {
+    aspectRatio_ = (float)width/(float)height;
+    projection_ = glm::perspective(
+            glm::radians(fov), aspectRatio_, 0.1f, 100.0f);
+    view_ = glm::lookAt(
+            position_, 
+            position_ + front(pitch_, yaw_), 
             glm::vec3(0, 1.0f, 0));
 }
 
 
 void Camera::setAspectRatio(int width, int height) {
-    _aspectRatio = (float)width/(float)height;
-    _projection = glm::perspective(
-            glm::radians(_fov), _aspectRatio, 0.1f, 100.0f);
+    aspectRatio_ = (float)width/(float)height;
+    projection_ = glm::perspective(
+            glm::radians(fov_), aspectRatio_, 0.1f, 100.0f);
 }
 
 void Camera::mouseCallback(double xPos, double yPos) {
-    if (_firstMouse) {
-        _lastX = xPos;
-        _lastY = yPos;
-        _firstMouse = false;
+    if (firstMouse_) {
+        lastX_ = xPos;
+        lastY_ = yPos;
+        firstMouse_ = false;
     }
 
-    float xDelta = xPos - _lastX;
-    float yDelta = yPos - _lastY;
-    _lastX = xPos;
-    _lastY = yPos;
+    float xDelta = xPos - lastX_;
+    float yDelta = yPos - lastY_;
+    lastX_ = xPos;
+    lastY_ = yPos;
 
-    _pitch -= yDelta * _lookSensitivity;
-    _yaw -= xDelta * _lookSensitivity;
-    _pitch = glm::clamp(_pitch, -89.0f, 89.0f);
+    pitch_ -= yDelta * lookSensitivity_;
+    yaw_ -= xDelta * lookSensitivity_;
+    pitch_ = glm::clamp(pitch_, -89.0f, 89.0f);
 
-    _view = glm::lookAt(
-            _position,
-            _position + front(_pitch, _yaw),
+    view_ = glm::lookAt(
+            position_,
+            position_ + front(pitch_, yaw_),
             glm::vec3(0, 1.0f, 0));
 }
 
 void Camera::keyboardCallback(GLFWwindow* window, float deltaTime) {
-    glm::vec3 planarFront = front(_pitch, _yaw);
+    glm::vec3 planarFront = front(pitch_, yaw_);
     planarFront.y = 0.0f;
     planarFront = glm::normalize(planarFront);
     glm::vec3 up = glm::vec3(0, 1.0f, 0);
     glm::vec3 right = glm::normalize(glm::cross(planarFront, up));
     
     if (glfwGetKey(window, GLFW_KEY_W)) {
-        _position += planarFront * _moveSensitivity * deltaTime;
+        position_ += planarFront * moveSensitivity_ * deltaTime;
     }
     if (glfwGetKey(window, GLFW_KEY_S)) {
-        _position -= planarFront * _moveSensitivity * deltaTime;
+        position_ -= planarFront * moveSensitivity_ * deltaTime;
     }
     if (glfwGetKey(window, GLFW_KEY_D)) {
-        _position += right * _moveSensitivity * deltaTime;
+        position_ += right * moveSensitivity_ * deltaTime;
     }
     if (glfwGetKey(window, GLFW_KEY_A)) {
-        _position -= right * _moveSensitivity * deltaTime;
+        position_ -= right * moveSensitivity_ * deltaTime;
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE)) {
-        _position += up * _moveSensitivity * deltaTime;
+        position_ += up * moveSensitivity_ * deltaTime;
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) {
-        _position -= up * _moveSensitivity * deltaTime;
+        position_ -= up * moveSensitivity_ * deltaTime;
     }
-    _view = glm::lookAt(
-        _position, 
-        _position + front(_pitch, _yaw),
+    view_ = glm::lookAt(
+        position_, 
+        position_ + front(pitch_, yaw_),
         up);
 }
 
 glm::vec3 Camera::position() {
-    return _position;
+    return position_;
 }
 
 glm::mat4 Camera::matrix(bool translation) {
     if (translation) {
-        return _projection * _view;
+        return projection_ * view_;
     } else {
         glm::mat4 view = glm::lookAt(
-            glm::vec3(0.0f), front(_pitch, _yaw), 
+            glm::vec3(0.0f), front(pitch_, yaw_), 
             glm::vec3(0.0f, 1.0f, 0.0f));
-        return _projection * view;
+        return projection_ * view;
     }
 }
