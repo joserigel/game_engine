@@ -1,6 +1,7 @@
 #include "window.hpp"
 
 #include "model.hpp"
+#include <iostream>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
@@ -10,6 +11,9 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
     windowObject->camera_.setAspectRatio(width, height);
 
+    windowObject->width_ = width;
+    windowObject->height_ = height;
+
 
     glBindTexture(GL_TEXTURE_2D, windowObject->screenTexture_);
     glTexImage2D(GL_TEXTURE_2D, 0,
@@ -17,7 +21,6 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
             0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 
     glBindRenderbuffer(GL_RENDERBUFFER, windowObject->rbo_);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
@@ -43,9 +46,15 @@ Window::Window() :
         throw std::runtime_error("Cannot initialize glew");
     }
 
+    light_ = make_unique<DirectionalLight>();
 
-    objectShader_ = make_unique<Shader>("../shaders/basic.vert", "../shaders/basic.frag");
-    screenShader_ = make_unique<Shader>("../shaders/screen.vert", "../shaders/screen.frag");
+
+    objectShader_ = make_unique<Shader>("../shaders/basic.vert", 
+            "../shaders/basic.frag");
+    screenShader_ = make_unique<Shader>("../shaders/screen.vert", 
+            "../shaders/screen.frag");
+    shadowShader_ = make_unique<Shader>("../shaders/shadow.vert",
+            "../shaders/shadow.frag");
     skybox_ = make_unique<CubeMap>(
         "../models/skybox/left.jpg",
         "../models/skybox/right.jpg",
@@ -58,6 +67,7 @@ Window::Window() :
     unsigned int skyboxLoc = objectShader_->uniformLocation("skybox");
     glUniform1i(skyboxLoc, 0);
     models_.emplace_back("../models/backpack/backpack.obj");
+    // models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
 
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
@@ -121,7 +131,9 @@ Window::Window() :
     glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
-}float skyboxVertices[] = {
+}
+
+float skyboxVertices[] = {
     // positions          
     -1.0f,  1.0f, -1.0f,
     -1.0f, -1.0f, -1.0f,
@@ -169,7 +181,6 @@ Window::Window() :
 Window::~Window() {
 }
 
-
 void Window::keyboardEvent_(float delta) {
     if (glfwGetKey(id_, GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(id_, true);
@@ -177,9 +188,23 @@ void Window::keyboardEvent_(float delta) {
     camera_.keyboardCallback(id_, delta);
 }
 
+void Window::drawShadow_() {
+    glBindFramebuffer(GL_FRAMEBUFFER, light_->fbo());
+    glViewport(0, 0, DEFAULT_SHADOW_WIDTH, DEFAULT_SHADOW_HEIGHT);
+    glEnable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    shadowShader_->use();
+    auto projection = light_->matrix();
+    shadowShader_->setMat4("projection", projection);
 
+    for (Model& model : models_) {
+        model.draw(*shadowShader_);
+    }
+}
 
 void Window::drawScene_() {
+    glViewport(0, 0, width_, height_);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer_);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -189,12 +214,20 @@ void Window::drawScene_() {
     skybox_->draw(matrix);
 
     glEnable(GL_DEPTH_TEST);
+
     objectShader_->use();
-    glActiveTexture(0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_->id());
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, light_->shadowTexture());
+    objectShader_->setInt("shadowMap", 2);
 
     auto projection = camera_.matrix();
     objectShader_->setMat4("projection", projection);
+
+    auto lightMatrix = light_->matrix();
+    objectShader_->setMat4("lightMatrix", lightMatrix);
+
+    auto lightDir = light_->direction();
+    objectShader_->setVec3("lightDir", lightDir);
 
     auto cameraPosition = camera_.position();
     objectShader_->setVec3("cameraPosition", cameraPosition);
@@ -210,8 +243,7 @@ void Window::drawScreen_() {
     glClearColor(1.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     screenShader_->use();
-    unsigned int screenTexture = screenShader_->uniformLocation("screenTexture");
-    glUniform1i(screenTexture, 0);
+    screenShader_->setInt("screentexture", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, screenTexture_);
     glBindVertexArray(screenVAO_);
@@ -219,15 +251,14 @@ void Window::drawScreen_() {
 }
 
 void Window::run() {
-
     float lastTime = glfwGetTime();
-
 
     while (!glfwWindowShouldClose(id_)) {
         float currentTime = glfwGetTime();
         float delta = currentTime - lastTime; 
         keyboardEvent_(delta);
 
+        drawShadow_();
         drawScene_();
         drawScreen_();
 
