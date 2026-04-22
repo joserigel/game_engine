@@ -18,7 +18,7 @@ Texture loadTextureFromFile(const char* path) {
     unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
 
     if (!data) {
-        throw std::runtime_error(std::string(path) + " not found!");
+        throw runtime_error(string(path) + " not found!");
     }
 
     Texture texture;
@@ -37,7 +37,7 @@ Texture loadTextureFromFile(const char* path) {
             format = GL_RGBA;
             break;
         default:
-            throw std::runtime_error("Unknown format:" + string(path));
+            throw runtime_error("Unknown format:" + string(path));
     }
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, 
         format, GL_UNSIGNED_BYTE, data);
@@ -50,7 +50,6 @@ Texture loadTextureFromFile(const char* path) {
 void Model::processTexture_(aiMesh* mesh, const aiScene* scene, string& directory) 
 {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    
 
     for (int i = 0; i < NUM_SUPPORTED_TEXTURE_TYPES; i++) {
         aiTextureType type = supportedTextureTypes[i];
@@ -78,8 +77,10 @@ void Model::processNode_(
     }
 }
 
+Model::Model() {}
+
 Model::Model(const char* path) {
-    std::string directory(path);
+    string directory(path);
     directory = directory.substr(0, directory.find_last_of("/"));
 
     Assimp::Importer importer;
@@ -89,7 +90,7 @@ Model::Model(const char* path) {
     if (!scene || 
         scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
         !scene->mRootNode) {
-        throw std::runtime_error(importer.GetErrorString());
+        throw runtime_error(importer.GetErrorString());
         return;
     }
 
@@ -105,7 +106,7 @@ void Model::draw(Shader& shader) {
 
         if (textures_.find(type) != textures_.end()) {
             string typeStr = aiTextureTypeToString(type);
-            std::transform(
+            transform(
                     typeStr.begin(), 
                     typeStr.end(), typeStr.begin(), ::tolower);
             Texture texture = textures_[type];
@@ -120,4 +121,40 @@ void Model::draw(Shader& shader) {
     for (Mesh& mesh : meshes_) {
         mesh.draw(shader);
     }
+}
+
+
+Model Model::Plane(glm::vec3 position) {
+    vector<Vertex> vertices(4);
+    
+    // Top Left
+    vertices[0].position = glm::vec3(-0.5f, 0.5f, 0.0f);
+    vertices[0].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[0].textureCoords = glm::vec2(0.0f, 0.0f);
+
+    // Top right
+    vertices[1].position = glm::vec3(0.5f, 0.5f, 0.0f);
+    vertices[1].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[1].textureCoords = glm::vec2(1.0f, 0.0f);
+
+    // Bottom Left
+    vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
+    vertices[2].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[2].textureCoords = glm::vec2(0.0f, 1.0f);
+
+    // Bottom right
+    vertices[3].position = glm::vec3(0.5f, -0.5f, 0.0f);
+    vertices[3].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[3].textureCoords = glm::vec2(1.0f, 1.0f);
+
+    vector<unsigned int> indices = {
+        0, 2, 3,
+        0, 3, 1
+    };
+
+    Model model;
+    model.position_ = position;
+    model.meshes_.emplace_back(vertices, indices);
+
+    return model;
 }

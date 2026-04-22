@@ -10,7 +10,7 @@ out vec3 Normal;
 out vec3 Position;
 
 void main() {
-    Normal = mat3(transpose(inverse(projection))) * aNormal;
+    Normal = aNormal;
     Position = aPos;
     gl_Position = projection * vec4(aPos, 1.0);
 }

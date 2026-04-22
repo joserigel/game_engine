@@ -1,6 +1,8 @@
 #ifndef __MESH_HPP__
 #define __MESH_HPP__
 
+#include <vector>
+
 #include <assimp/mesh.h>
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
@@ -29,6 +31,7 @@ class Mesh {
         unsigned int indicesCount_;
 
     public:
+        Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices);
         Mesh(aiMesh* mesh, const aiScene* scene);
         void draw(Shader& shader);
 };

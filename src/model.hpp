@@ -20,12 +20,30 @@ class Model {
     private:
         vector<Mesh> meshes_;
         unordered_map<aiTextureType, Texture> textures_;
+        glm::vec3 position_;
 
         void processNode_(aiNode* node, const aiScene* scene, string& directory);
         void processTexture_(aiMesh* mesh, const aiScene* scene, string& directory);
+        Model();
     public:
         Model(const char* path);
+        glm::vec3 position();
+        glm::vec3 setPosition(glm::vec3 position);
         void draw(Shader& shader);
+
+
+        /**
+         * Basic Plane Object Generator
+         * @param position Position of the plane
+         * @return Basic plane model object
+         */
+        static Model Plane(glm::vec3 position);
+};
+
+struct Object {
+    Model* model;
+    Shader* shader;
+    glm::vec3 position;
 };
 
 #endif
