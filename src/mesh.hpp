@@ -17,12 +17,6 @@ struct Vertex {
     glm::vec2 textureCoords;
 };
 
-struct Texture {
-    unsigned int id;
-    aiTextureType type;
-    std::string path;
-};
-
 class Mesh {
     private:
         unsigned int vao_;

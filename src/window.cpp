@@ -216,9 +216,9 @@ void Window::drawScene_() {
     glEnable(GL_DEPTH_TEST);
 
     objectShader_->use();
-    glActiveTexture(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, light_->shadowTexture());
-    objectShader_->setInt("shadowMap", 2);
+    objectShader_->setInt("shadowMap", 3);
 
     auto projection = camera_.matrix();
     objectShader_->setMat4("projection", projection);

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "mesh.hpp"
+#include "texture.hpp"
 
 using namespace std;
 
