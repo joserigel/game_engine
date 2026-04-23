@@ -21,6 +21,21 @@ Loading textures uses [stb](https://github.com/nothings/stb?tab=readme-ov-file)
 - GLEW  `sudo apt install libglew-dev`
 - glfw3 `sudo apt install libglfw3-dev`
 
+#### Texture Conventions
+
+Currently, the supported texture types are
+`DIFFUSE`, `SPECULAR`, and `NORMALS`. The convention is that by default
+you can declare `uniform sampler2D {type}_texture` in a shader file
+to use the different types of textures. You can see usage example in the
+`shaders/basic.frag` file. 
+
+| Texture Type | Default GLSL Variable Name | Index |
+| ------------ | -------------------------- | ----- |
+| DIFFUSE      | diffuse_texture            | 0     |
+| SPECULAR     | specular_texture           | 1     |
+| NORMALS      | normals_texture            | 2     |
+
+
 
 use these installations for Ubuntu, otherwise provide your own :D
 
