@@ -9,11 +9,12 @@
 
 using namespace std;
 
-#define NUM_SUPPORTED_TEXTURE_TYPES 2
+#define NUM_SUPPORTED_TEXTURE_TYPES 3
 
 const aiTextureType supportedTextureTypes[NUM_SUPPORTED_TEXTURE_TYPES] = {
     aiTextureType_DIFFUSE,
-    aiTextureType_SPECULAR
+    aiTextureType_SPECULAR,
+    aiTextureType_NORMALS
 };
 
 class Model {

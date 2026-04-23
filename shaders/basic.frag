@@ -10,6 +10,7 @@ uniform vec3 lightDir;
 
 uniform sampler2D diffuse_texture;
 uniform sampler2D specular_texture;
+uniform sampler2D normals_texture;
 uniform sampler2D shadowMap;
 
 float shadowCalculation(vec4 fragPosLightSpace) {
