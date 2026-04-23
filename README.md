@@ -21,6 +21,8 @@ Loading textures uses [stb](https://github.com/nothings/stb?tab=readme-ov-file)
 - GLEW  `sudo apt install libglew-dev`
 - glfw3 `sudo apt install libglfw3-dev`
 
+use these installations for Ubuntu, otherwise provide your own :D
+
 #### Texture Conventions
 
 Currently, the supported texture types are
@@ -37,6 +39,5 @@ to use the different types of textures. You can see usage example in the
 
 
 
-use these installations for Ubuntu, otherwise provide your own :D
 
 
