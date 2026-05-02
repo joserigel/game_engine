@@ -43,6 +43,10 @@ glm::vec3 DirectionalLight::direction() {
     return direction_;
 }
 
+void DirectionalLight::setDirection(glm::vec3& dir) {
+    direction_ = glm::normalize(dir);
+}
+
 glm::mat4 DirectionalLight::matrix() {
     glm::mat4 ortho = glm::ortho(-3.0f, 3.0f, -3.0f, 3.0f, 0.1f, 5.0f);
     glm::mat4 view = glm::lookAt(

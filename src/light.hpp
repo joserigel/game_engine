@@ -20,6 +20,7 @@ class DirectionalLight {
         unsigned int fbo();
         glm::mat4 matrix();
         glm::vec3 direction();
+        void setDirection(glm::vec3& dir);
 };
 
 

@@ -64,10 +64,10 @@ Window::Window() :
     unsigned int skyboxLoc = objectShader_->uniformLocation("skybox");
     glUniform1i(skyboxLoc, 0);
 
-    // models_.emplace_back("../models/backpack/backpack.obj");
-    models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
-    models_[0].setTexture(aiTextureType_DIFFUSE, "../models/brickwall.jpg");
-    models_[0].setTexture(aiTextureType_NORMALS, "../models/normal.png");
+    models_.emplace_back("../models/backpack/backpack.obj");
+    // models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
+    // models_[0].setTexture(aiTextureType_DIFFUSE, "../models/brickwall.jpg");
+    // models_[0].setTexture(aiTextureType_NORMALS, "../models/normal.png");
 
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
@@ -213,6 +213,9 @@ void Window::run() {
         float currentTime = glfwGetTime();
         float delta = currentTime - lastTime; 
         keyboardEvent_(delta);
+
+        glm::vec3 dir = glm::vec3(sin(currentTime), 0, cos(currentTime));
+        light_->setDirection(dir);
 
         drawShadow_();
         drawScene_();

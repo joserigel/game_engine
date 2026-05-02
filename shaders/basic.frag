@@ -3,6 +3,8 @@
 in vec3 Normal;
 in vec2 TexCoord;
 in vec4 FragPosLightSpace;
+in vec3 Tangent;
+in vec3 Bitangent;
 
 out vec4 FragColor;
 
@@ -25,7 +27,12 @@ float shadowCalculation(vec4 fragPosLightSpace) {
 
 void main() {
     vec3 color = texture(diffuse_texture, TexCoord).rgb;
-    float diff = max(dot(-lightDir, Normal), 0.0);
+    vec3 normal = texture(normals_texture, TexCoord).rgb;
+    normal = normal * 2.0 - 1.0;
+    mat3 TBN = mat3(Tangent, Bitangent, Normal);
+    normal = normalize(TBN * normal);
+
+    float diff = max(dot(-lightDir, normal), 0.0);
     vec3 diffuse = diff * color;
     vec3 ambient = color * 0.3;
 

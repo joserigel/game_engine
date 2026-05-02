@@ -20,6 +20,12 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
             mesh->mNormals[i].y,
             mesh->mNormals[i].z
             );
+        vertex.tangent = glm::vec3(
+            mesh->mTangents[i].x,
+            mesh->mTangents[i].y,
+            mesh->mTangents[i].z
+            );
+        vertex.bitangent = glm::cross(vertex.normal, vertex.tangent);
         
         // Technically up to AI_MAX_NUMBER_OF_TEXTURECOORDS is allowed, 
         // but we only look at 1
@@ -79,6 +85,14 @@ Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
         2, 2, GL_FLOAT, GL_FALSE, 
         sizeof(Vertex), (void*)offsetof(Vertex, textureCoords));
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+        3, 3, GL_FLOAT, GL_FALSE,
+        sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(
+        4, 3, GL_FLOAT, GL_FALSE,
+        sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+    glEnableVertexAttribArray(4);
 
     glBindVertexArray(0);
 }
@@ -119,6 +133,14 @@ Mesh::Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices) {
         2, 2, GL_FLOAT, GL_FALSE,
         sizeof(Vertex), (void*)offsetof(Vertex, textureCoords));
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+        3, 3, GL_FLOAT, GL_FALSE,
+        sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(
+        4, 3, GL_FLOAT, GL_FALSE,
+        sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+    glEnableVertexAttribArray(4);
 
     indicesCount_ = indices.size();
 }
