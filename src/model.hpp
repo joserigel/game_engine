@@ -33,6 +33,7 @@ class Model {
         glm::vec3 setPosition(glm::vec3 position);
         void draw(Shader& shader);
 
+        void setTexture(aiTextureType type, const char* path);
 
         /**
          * Basic Plane Object Generator

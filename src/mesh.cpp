@@ -117,7 +117,7 @@ Mesh::Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices) {
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
         2, 2, GL_FLOAT, GL_FALSE,
-        sizeof(Vertex), (void*)offsetof(Vertex, normal));
+        sizeof(Vertex), (void*)offsetof(Vertex, textureCoords));
     glEnableVertexAttribArray(2);
 
     indicesCount_ = indices.size();

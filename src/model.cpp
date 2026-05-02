@@ -62,7 +62,6 @@ Model::Model(const char* path) {
     processNode_(scene->mRootNode, scene, directory);
 }
 
-
 void Model::draw(Shader& shader) {
     shader.use();
 
@@ -88,28 +87,31 @@ void Model::draw(Shader& shader) {
     }
 }
 
+void Model::setTexture(aiTextureType type, const char* path) {
+    textures_.emplace(type, Texture(path));
+}
 
 Model Model::Plane(glm::vec3 position) {
     vector<Vertex> vertices(4);
     
     // Top Left
     vertices[0].position = glm::vec3(-0.5f, 0.5f, 0.0f);
-    vertices[0].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[0].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[0].textureCoords = glm::vec2(0.0f, 0.0f);
 
     // Top right
     vertices[1].position = glm::vec3(0.5f, 0.5f, 0.0f);
-    vertices[1].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[1].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[1].textureCoords = glm::vec2(1.0f, 0.0f);
 
     // Bottom Left
     vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
-    vertices[2].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[2].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[2].textureCoords = glm::vec2(0.0f, 1.0f);
 
     // Bottom right
     vertices[3].position = glm::vec3(0.5f, -0.5f, 0.0f);
-    vertices[3].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    vertices[3].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[3].textureCoords = glm::vec2(1.0f, 1.0f);
 
     vector<unsigned int> indices = {

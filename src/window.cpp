@@ -13,7 +13,6 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
     windowObject->width_ = width;
     windowObject->height_ = height;
 
-
     glBindTexture(GL_TEXTURE_2D, windowObject->screenTexture_);
     glTexImage2D(GL_TEXTURE_2D, 0,
             GL_RGB, width, height,
@@ -47,7 +46,6 @@ Window::Window() :
 
     light_ = make_unique<DirectionalLight>();
 
-
     objectShader_ = make_unique<Shader>("../shaders/basic.vert", 
             "../shaders/basic.frag");
     screenShader_ = make_unique<Shader>("../shaders/screen.vert", 
@@ -65,8 +63,11 @@ Window::Window() :
     objectShader_->use();
     unsigned int skyboxLoc = objectShader_->uniformLocation("skybox");
     glUniform1i(skyboxLoc, 0);
-    models_.emplace_back("../models/backpack/backpack.obj");
-    // models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
+
+    // models_.emplace_back("../models/backpack/backpack.obj");
+    models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
+    models_[0].setTexture(aiTextureType_DIFFUSE, "../models/brickwall.jpg");
+    models_[0].setTexture(aiTextureType_NORMALS, "../models/normal.png");
 
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
@@ -132,50 +133,6 @@ Window::Window() :
     glBindVertexArray(0);
 }
 
-float skyboxVertices[] = {
-    // positions          
-    -1.0f,  1.0f, -1.0f,
-    -1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-    -1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f
-};
 
 Window::~Window() {
 }

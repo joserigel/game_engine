@@ -17,7 +17,7 @@ unsigned int Texture::id() {
 Texture::Texture(const char* path) {
 
     int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
 
     if (!data) {
@@ -41,6 +41,8 @@ Texture::Texture(const char* path) {
         default:
             throw runtime_error("Unknown format:" + string(path));
     }
+    // What tf is this??? man cuz it's not divisible by 4
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, 
         format, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
