@@ -100,28 +100,24 @@ Model Model::Plane(glm::vec3 position) {
     vertices[0].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[0].textureCoords = glm::vec2(0.0f, 0.0f);
     vertices[0].tangent = glm::vec3(1.0f, 0.0f, 0.0f);
-    vertices[0].bitangent = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Top right
     vertices[1].position = glm::vec3(0.5f, 0.5f, 0.0f);
     vertices[1].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[1].textureCoords = glm::vec2(1.0f, 0.0f);
     vertices[1].tangent = glm::vec3(1.0f, 0.0f, 0.0f);
-    vertices[1].bitangent = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Bottom Left
     vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
     vertices[2].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[2].textureCoords = glm::vec2(0.0f, 1.0f);
     vertices[2].tangent = glm::vec3(1.0f, 0.0f, 0.0f);
-    vertices[2].bitangent = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Bottom right
     vertices[3].position = glm::vec3(0.5f, -0.5f, 0.0f);
     vertices[3].normal = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[3].textureCoords = glm::vec2(1.0f, 1.0f);
     vertices[3].tangent = glm::vec3(1.0f, 0.0f, 0.0f);
-    vertices[3].bitangent = glm::vec3(0.0f, 1.0f, 0.0f);
 
     vector<unsigned int> indices = {
         0, 2, 3,
