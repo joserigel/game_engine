@@ -36,8 +36,5 @@ to use the different types of textures. You can see usage example in the
 | DIFFUSE      | diffuse_texture            | 0     |
 | SPECULAR     | specular_texture           | 1     |
 | NORMALS      | normals_texture            | 2     |
-
-
-
-
+| HEIGHT       | height_texture             | 3     |
 

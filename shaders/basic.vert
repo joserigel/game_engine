@@ -9,6 +9,7 @@ layout (location = 3) in vec3 aTangent;
 out vec3 Normal;
 out vec2 TexCoord;
 out vec4 FragPosLightSpace;
+out vec3 FragPos;
 out vec3 Tangent;
 out vec3 Bitangent;
 
@@ -18,7 +19,8 @@ uniform mat4 lightMatrix;
 void main() {
     Normal = aNormal;
     Tangent = normalize(aTangent - dot(aTangent, aNormal) * aNormal);
-    Bitangent = cross(aNormal, aTangent);
+    Bitangent = cross(aTangent, aNormal);
+    FragPos = aPos.xyz;
     gl_Position = projection * vec4(aPos, 1.0);
     TexCoord = aTexCoord;
     FragPosLightSpace = lightMatrix * vec4(aPos, 1.0);

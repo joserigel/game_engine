@@ -12,7 +12,7 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
 
     windowObject->width_ = width;
     windowObject->height_ = height;
-
+    
     glBindTexture(GL_TEXTURE_2D, windowObject->screenTexture_);
     glTexImage2D(GL_TEXTURE_2D, 0,
             GL_RGB, width, height,
@@ -64,10 +64,11 @@ Window::Window() :
     unsigned int skyboxLoc = objectShader_->uniformLocation("skybox");
     glUniform1i(skyboxLoc, 0);
 
-    models_.emplace_back("../models/backpack/backpack.obj");
-    // models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
-    // models_[0].setTexture(aiTextureType_DIFFUSE, "../models/brickwall.jpg");
-    // models_[0].setTexture(aiTextureType_NORMALS, "../models/normal.png");
+    // models_.emplace_back("../models/backpack/backpack.obj");
+    models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
+    models_[0].setTexture(aiTextureType_DIFFUSE, "../models/wood.png");
+    models_[0].setTexture(aiTextureType_NORMALS, "../models/toy_box_normal.png");
+    models_[0].setTexture(aiTextureType_HEIGHT, "../models/toy_box_disp.png");
 
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
@@ -172,9 +173,9 @@ void Window::drawScene_() {
     glEnable(GL_DEPTH_TEST);
 
     objectShader_->use();
-    glActiveTexture(GL_TEXTURE3);
+    glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, light_->shadowTexture());
-    objectShader_->setInt("shadowMap", 3);
+    objectShader_->setInt("shadowMap", 4);
 
     auto projection = camera_.matrix();
     objectShader_->setMat4("projection", projection);
@@ -216,7 +217,7 @@ void Window::run() {
 
         glm::vec3 dir = glm::vec3(sin(currentTime), 0, cos(currentTime));
         light_->setDirection(dir);
-
+    
         drawShadow_();
         drawScene_();
         drawScreen_();

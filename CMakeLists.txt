@@ -12,7 +12,7 @@ find_package(glfw3 REQUIRED)
 include(FetchContent)
 FetchContent_Declare(assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
-    GIT_TAG master
+    GIT_TAG v6.0.5
     GIT_SHALLOW ON
     EXCLUDE_FROM_ALL
     SYSTEM
