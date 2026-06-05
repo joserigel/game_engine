@@ -8,7 +8,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "stb_image.h"
+#include "../utils/stb_image.h"
 
 using namespace std;
 

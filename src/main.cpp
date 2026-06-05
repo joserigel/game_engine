@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "window.hpp"
+#include "rendering/window.hpp"
 
 
 int main() {

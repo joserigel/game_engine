@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 
-#include "stb_image.h"
+#include "../utils/stb_image.h"
 
 unsigned int CubeMap::id() {
     return texture_;

@@ -64,11 +64,11 @@ Window::Window() :
     unsigned int skyboxLoc = objectShader_->uniformLocation("skybox");
     glUniform1i(skyboxLoc, 0);
 
-    // models_.emplace_back("../models/backpack/backpack.obj");
-    models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
-    models_[0].setTexture(aiTextureType_DIFFUSE, "../models/wood.png");
-    models_[0].setTexture(aiTextureType_NORMALS, "../models/toy_box_normal.png");
-    models_[0].setTexture(aiTextureType_HEIGHT, "../models/toy_box_disp.png");
+    models_.emplace_back("../models/backpack/backpack.obj");
+    // models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
+    // models_[0].setTexture(aiTextureType_DIFFUSE, "../models/wood.png");
+    // models_[0].setTexture(aiTextureType_NORMALS, "../models/toy_box_normal.png");
+    // models_[0].setTexture(aiTextureType_HEIGHT, "../models/toy_box_disp.png");
 
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);

@@ -59,7 +59,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
 void main() {
     mat3 TBN = mat3(Tangent, Bitangent, Normal);
     vec3 viewDir = TBN * (cameraPosition - FragPos);
-    vec2 texCoords = TexCoord;
+    vec2 texCoords = ParallaxMapping(TexCoord, viewDir);
 
     if(
         texCoords.x > 1.0 ||

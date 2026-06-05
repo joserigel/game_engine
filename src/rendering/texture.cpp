@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-#include "stb_image.h"
+#include "../utils/stb_image.h"
 #include <glm/glm.hpp>
 #include <string>
 #include <stdexcept>
