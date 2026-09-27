@@ -1,5 +1,5 @@
-#ifndef __MODEL_HPP__
-#define __MODEL_HPP__
+#ifndef __RENDERING_MODEL_HPP__
+#define __RENDERING_MODEL_HPP__
 
 #include <assimp/scene.h>
 #include <unordered_map>

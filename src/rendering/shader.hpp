@@ -1,5 +1,5 @@
-#ifndef __SHADER_HPP__
-#define __SHADER_HPP__
+#ifndef __RENDERING_SHADER_HPP__
+#define __RENDERING_SHADER_HPP__
 
 #include <glm/glm.hpp>
 

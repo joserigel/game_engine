@@ -1,5 +1,5 @@
-#ifndef __CUBEMAP_HPP__
-#define __CUBEMAP_HPP__
+#ifndef __RENDERING_CUBEMAP_HPP__
+#define __RENDERING_CUBEMAP_HPP__
 
 #include <glm/matrix.hpp>
 

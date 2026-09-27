@@ -1,5 +1,5 @@
-#ifndef __MESH_HPP__
-#define __MESH_HPP__
+#ifndef __RENDERING_MESH_HPP__
+#define __RENDERING_MESH_HPP__
 
 #include <vector>
 
