@@ -22,6 +22,7 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
     glBindRenderbuffer(GL_RENDERBUFFER, windowObject->rbo_);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
             width, height);
+    windowObject->text_->adjustAspectRatio((float)width / height);
 }
 
 void Window::cursorPosCallback_(GLFWwindow* window, double xpos, double ypos) {
@@ -108,7 +109,9 @@ Window::Window() {
 
     glBindVertexArray(0);
 
+    // Create text
     text_ = std::make_shared<Text>("../assets/bitmap_font_38_83.png");
+    text_->adjustAspectRatio((float)width_ / height_);
 }
 
 
@@ -118,6 +121,10 @@ Window::~Window() {
 void Window::keyboardEvent_(float delta) {
     if (glfwGetKey(id_, GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(id_, true);
+    } else if (glfwGetKey(id_, GLFW_KEY_F)) {
+        glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    } else if (glfwGetKey(id_, GLFW_KEY_H)) {
+        glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
 }
 
@@ -148,7 +155,7 @@ void Window::run() {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        text_->draw("");
+        text_->draw("abcdefh", .1f, glm::vec2(0.0f, 0.0f));
         
         drawScreen_();
 

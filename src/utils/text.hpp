@@ -9,8 +9,8 @@
 
 #define CHARACTER_COUNT_X 13
 #define CHARACTER_COUNT_Y 7
-#define CHARACTER_WIDTH 68
-#define CHARACTER_HEIGHT 83
+#define CHARACTER_WIDTH 0.38f
+#define CHARACTER_HEIGHT 0.83f
 
 
 class Text {
@@ -24,6 +24,7 @@ class Text {
     public:
         Text(const char* path);
         void draw(std::string text, float size, glm::vec2 pos);
+        void adjustAspectRatio(float ratio);
 };
 
 #endif

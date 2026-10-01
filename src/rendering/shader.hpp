@@ -10,6 +10,7 @@ class Shader {
         void use();
         unsigned int uniformLocation(const char* name);
 
+        void setMat2(const char* name, glm::mat2& value);
         void setMat3(const char* name, glm::mat3& value);
         void setMat4(const char* name, glm::mat4& value);
         void setVec2(const char* name, glm::vec2& value);

@@ -3,6 +3,7 @@
 layout (location = 0) in vec2 aPos;
 layout (location = 1) in vec2 aTexCoords;
 
+uniform mat2 ratio;
 uniform mat2 size;
 uniform vec2 position;
 
@@ -10,5 +11,5 @@ out vec2 TexCoords;
 
 void main() {
     TexCoords = aTexCoords;
-    gl_Position = vec4(size * aPos + position, 0.0, 1.0);
+    gl_Position = vec4((ratio * size * aPos) + position, 0.0, 1.0);
 }

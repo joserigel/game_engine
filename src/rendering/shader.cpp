@@ -18,6 +18,10 @@ unsigned int Shader::uniformLocation(const char* name) {
     return glGetUniformLocation(program_, name);
 }
 
+void Shader::setMat2(const char* name, glm::mat2& value) {
+    unsigned int location = glGetUniformLocation(program_, name);
+    glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
 
 void Shader::setMat3(const char* name, glm::mat3& value) {
     unsigned int location = glGetUniformLocation(program_, name);
