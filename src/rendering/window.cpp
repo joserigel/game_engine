@@ -8,7 +8,6 @@
 void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
     Window* windowObject = static_cast<Window*>(glfwGetWindowUserPointer(window));
     glViewport(0, 0, width, height);
-    windowObject->camera_.setAspectRatio(width, height);
 
     windowObject->width_ = width;
     windowObject->height_ = height;
@@ -27,12 +26,9 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
 
 void Window::cursorPosCallback_(GLFWwindow* window, double xpos, double ypos) {
     Window* windowObject = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    windowObject->camera_.mouseCallback(xpos, ypos);
 }
 
-Window::Window() : 
-    camera_(WINDOW_DEFAULT_FOV, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT)
-{
+Window::Window() {
     id_ = glfwCreateWindow(
             WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT, 
             "GameEngine", nullptr, nullptr);
@@ -44,31 +40,6 @@ Window::Window() :
         throw std::runtime_error("Cannot initialize glew");
     }
 
-    light_ = make_unique<DirectionalLight>();
-
-    objectShader_ = make_unique<Shader>("../shaders/basic.vert", 
-            "../shaders/basic.frag");
-    screenShader_ = make_unique<Shader>("../shaders/screen.vert", 
-            "../shaders/screen.frag");
-    shadowShader_ = make_unique<Shader>("../shaders/shadow.vert",
-            "../shaders/shadow.frag");
-    skybox_ = make_unique<CubeMap>(
-        "../models/skybox/left.jpg",
-        "../models/skybox/right.jpg",
-        "../models/skybox/bottom.jpg",
-        "../models/skybox/top.jpg",
-        "../models/skybox/front.jpg",
-        "../models/skybox/back.jpg"
-        );
-    objectShader_->use();
-    unsigned int skyboxLoc = objectShader_->uniformLocation("skybox");
-    glUniform1i(skyboxLoc, 0);
-
-    models_.emplace_back("../models/backpack/bed_room.obj");
-    // models_.push_back(Model::Plane(glm::vec3(0.f,0.f,0.f)));
-    // models_[0].setTexture(aiTextureType_DIFFUSE, "../models/wood.png");
-    // models_[0].setTexture(aiTextureType_NORMALS, "../models/toy_box_normal.png");
-    // models_[0].setTexture(aiTextureType_HEIGHT, "../models/toy_box_disp.png");
 
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
@@ -131,7 +102,13 @@ Window::Window() :
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)(2*sizeof(float)));
     glEnableVertexAttribArray(1);
 
+
+    screenShader_ = std::make_shared<Shader>(
+            "../shaders/screen.vert", "../shaders/screen.frag");
+
     glBindVertexArray(0);
+
+    text_ = std::make_shared<Text>("../assets/bitmap_font_38_83.png");
 }
 
 
@@ -142,62 +119,13 @@ void Window::keyboardEvent_(float delta) {
     if (glfwGetKey(id_, GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(id_, true);
     }
-    camera_.keyboardCallback(id_, delta);
 }
 
-void Window::drawShadow_() {
-    glBindFramebuffer(GL_FRAMEBUFFER, light_->fbo());
-    glViewport(0, 0, DEFAULT_SHADOW_WIDTH, DEFAULT_SHADOW_HEIGHT);
-    glEnable(GL_DEPTH_TEST);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    shadowShader_->use();
-    auto projection = light_->matrix();
-    shadowShader_->setMat4("projection", projection);
-
-    for (Model& model : models_) {
-        model.draw(*shadowShader_);
-    }
-}
-
-void Window::drawScene_() {
-    glViewport(0, 0, width_, height_);
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer_);
-
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glm::mat4 matrix = camera_.matrix(false);
-    skybox_->draw(matrix);
-
-    glEnable(GL_DEPTH_TEST);
-
-    objectShader_->use();
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, light_->shadowTexture());
-    objectShader_->setInt("shadowMap", 4);
-
-    auto projection = camera_.matrix();
-    objectShader_->setMat4("projection", projection);
-
-    auto lightMatrix = light_->matrix();
-    objectShader_->setMat4("lightMatrix", lightMatrix);
-
-    auto lightDir = light_->direction();
-    objectShader_->setVec3("lightDir", lightDir);
-
-    auto cameraPosition = camera_.position();
-    objectShader_->setVec3("cameraPosition", cameraPosition);
-
-    for (Model& model : models_) {
-        model.draw(*objectShader_);
-    }
-}
 
 void Window::drawScreen_() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
-    glClearColor(1.0, 0.0, 0.0, 1.0);
+    glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     screenShader_->use();
     screenShader_->setInt("screentexture", 0);
@@ -215,11 +143,13 @@ void Window::run() {
         float delta = currentTime - lastTime; 
         keyboardEvent_(delta);
 
-        glm::vec3 dir = glm::vec3(sin(currentTime), 0, cos(currentTime));
-        light_->setDirection(dir);
-    
-        drawShadow_();
-        drawScene_();
+        glViewport(0, 0, width_, height_);
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer_);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        text_->draw("");
+        
         drawScreen_();
 
         glfwPollEvents();

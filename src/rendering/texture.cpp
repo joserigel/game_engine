@@ -14,6 +14,8 @@ unsigned int Texture::id() {
     return id_;
 }
 
+Texture::Texture() {}
+
 Texture::Texture(const char* path) {
 
     int width, height, nrChannels;
