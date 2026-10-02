@@ -23,7 +23,7 @@ class Text {
         unsigned int ebo_;
     public:
         Text(const char* path);
-        void draw(std::string text, float size, glm::vec2 pos);
+        void draw(std::string text, float size = 0.1f, glm::vec2 pos = glm::vec2(-1.0f, 1.0f));
         void adjustAspectRatio(float ratio);
 };
 

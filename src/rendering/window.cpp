@@ -1,7 +1,5 @@
 #include "window.hpp"
 
-#include "model.hpp"
-
 #include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 
@@ -132,8 +130,8 @@ void Window::keyboardEvent_(float delta) {
 void Window::drawScreen_() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
-    glClearColor(0.3, 0.3, 0.3, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     screenShader_->use();
     screenShader_->setInt("screentexture", 0);
     glActiveTexture(GL_TEXTURE0);
@@ -155,12 +153,13 @@ void Window::run() {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        text_->draw("abcdefh", .1f, glm::vec2(0.0f, 0.0f));
+        text_->draw("FPS: " + std::to_string((int)round(1 / delta)));
         
         drawScreen_();
 
         glfwPollEvents();
         glfwSwapBuffers(id_);
+        lastTime = currentTime;
     }
 }
 

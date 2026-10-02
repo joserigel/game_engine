@@ -6,7 +6,7 @@
 std::pair<int, int> charToOffset(char c) {
     const std::vector<std::string> rows = {
         " ~`!@#$%^&*()",
-        "_-+,.?/\\|;:'\"",
+        "_-+,.?/\\|:;'\"",
         "0123456789abc",
         "defghijklmnop",
         "qrstuvwxyzABC",
@@ -67,7 +67,7 @@ Text::Text(const char* path) :
     glBindVertexArray(0);
 }
 
-void Text::draw(std::string text, float size = 0.1f, glm::vec2 pos = glm::vec2(0.0f, 0.0f)) {
+void Text::draw(std::string text, float size, glm::vec2 pos) {
     fontShader_.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, fontBitmap_.id());
@@ -82,18 +82,26 @@ void Text::draw(std::string text, float size = 0.1f, glm::vec2 pos = glm::vec2(0
     fontShader_.setVec2("position", pos);
 
     float physicalWidth = CHARACTER_WIDTH * size;
+    float physicalHeight = CHARACTER_HEIGHT * size;
     float uvWidth = 1.0f / CHARACTER_COUNT_X;
     float uvHeight = 1.0f / CHARACTER_COUNT_Y;
 
     int i = 0;
+    int breakLineCount = 0;
 
     glBindVertexArray(vao_);
     for(auto c = text.begin(); c != text.end(); c++) {
+        if (*c == '\n') {
+            breakLineCount++;
+            i = 0;
+            continue;
+        }
+
         auto [u, v] = charToOffset(*c);
         auto fontOffset = glm::vec2(uvWidth * u, uvHeight * v);
         fontShader_.setVec2("fontOffset", fontOffset);
 
-        auto position = pos + glm::vec2(i * physicalWidth, 0.0f);
+        auto position = pos + glm::vec2(i * physicalWidth, -breakLineCount * physicalHeight);
         fontShader_.setVec2("position", position);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
