@@ -1,5 +1,9 @@
 #include "window.hpp"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 
@@ -9,7 +13,7 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
 
     windowObject->width_ = width;
     windowObject->height_ = height;
-    
+
     glBindTexture(GL_TEXTURE_2D, windowObject->screenTexture_);
     glTexImage2D(GL_TEXTURE_2D, 0,
             GL_RGB, width, height,
@@ -20,14 +24,15 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
     glBindRenderbuffer(GL_RENDERBUFFER, windowObject->rbo_);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
             width, height);
-    windowObject->text_->adjustAspectRatio((float)width / height);
-}
-
-void Window::cursorPosCallback_(GLFWwindow* window, double xpos, double ypos) {
-    Window* windowObject = static_cast<Window*>(glfwGetWindowUserPointer(window));
 }
 
 Window::Window() {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE,
+            GLFW_OPENGL_CORE_PROFILE);
+
     id_ = glfwCreateWindow(
             WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT, 
             "GameEngine", nullptr, nullptr);
@@ -40,11 +45,29 @@ Window::Window() {
     }
 
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+    ImGui::StyleColorsDark();
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.ScaleAllSizes(1.0f);
+    style.FontScaleDpi = 1.0f;
+
+    ImGui_ImplGlfw_InitForOpenGL(id_, true);
+
+    const char* glsl_version = nullptr;
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
+
     // Set cursor callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
     glfwSetWindowUserPointer(id_, (void*)this);
     glfwSetFramebufferSizeCallback(id_, Window::sizeCallback_);
-    glfwSetCursorPosCallback(id_, Window::cursorPosCallback_);
     glEnable(GL_DEPTH_TEST);
 
     // Create Frame buffer
@@ -106,14 +129,15 @@ Window::Window() {
             "../shaders/screen.vert", "../shaders/screen.frag");
 
     glBindVertexArray(0);
-
-    // Create text
-    text_ = std::make_shared<Text>("../assets/bitmap_font_38_83.png");
-    text_->adjustAspectRatio((float)width_ / height_);
 }
 
 
 Window::~Window() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+
+    glfwDestroyWindow(id_);
+    glfwTerminate();
 }
 
 void Window::keyboardEvent_(float delta) {
@@ -143,21 +167,39 @@ void Window::drawScreen_() {
 void Window::run() {
     float lastTime = glfwGetTime();
 
+    int i = 0;
     while (!glfwWindowShouldClose(id_)) {
+        glfwPollEvents();
         float currentTime = glfwGetTime();
         float delta = currentTime - lastTime; 
+
         keyboardEvent_(delta);
+
 
         glViewport(0, 0, width_, height_);
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer_);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        text_->draw("FPS: " + std::to_string((int)round(1 / delta)));
-        
         drawScreen_();
 
-        glfwPollEvents();
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Begin("Hello World");
+        std::string text = "Hello test: " + std::to_string(i);
+        ImGui::Text("%s", text.c_str());
+        if(ImGui::Button("Button Test"))
+            i++;
+
+        ImGui::End();
+
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(id_, &display_w, &display_h);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(id_);
         lastTime = currentTime;
     }

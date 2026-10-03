@@ -25,13 +25,10 @@ class Window {
         unsigned int rbo_;
         unsigned int screenVAO_;
 
-        shared_ptr<Text> text_;
         shared_ptr<Shader> screenShader_;
 
         static void sizeCallback_(
             GLFWwindow* window, int width, int height);
-        static void cursorPosCallback_(
-            GLFWwindow* window, double xpos, double ypos);
 
         void drawScreen_();
     public:

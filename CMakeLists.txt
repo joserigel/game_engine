@@ -19,15 +19,38 @@ FetchContent_Declare(assimp
 )
 FetchContent_MakeAvailable(assimp)
 
+FetchContent_Declare(imgui
+    GIT_REPOSITORY git@github.com:ocornut/imgui.git
+    GIT_TAG v1.92.9
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM
+)
+FetchContent_MakeAvailable(imgui)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
 file(GLOB_RECURSE GAME_ENGINE_SOURCES "src/main.cpp"
     "src/**/*.h" "src/**/*.hpp" "src/**/*.cpp")
 
+
+add_library(imgui STATIC
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_demo.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(imgui PUBLIC
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
+)
+
 add_executable(GameEngine ${GAME_ENGINE_SOURCES})
 
-target_link_libraries(GameEngine PRIVATE OpenGL)
-target_link_libraries(GameEngine PRIVATE GLEW)
-target_link_libraries(GameEngine PRIVATE glfw)
-target_link_libraries(GameEngine PRIVATE assimp)
+target_link_libraries(GameEngine 
+    PRIVATE OpenGL GLEW glfw assimp imgui)
