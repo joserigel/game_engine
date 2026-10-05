@@ -24,9 +24,12 @@ void Window::sizeCallback_(GLFWwindow* window, int width, int height) {
     glBindRenderbuffer(GL_RENDERBUFFER, windowObject->rbo_);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
             width, height);
+    
+    windowObject->scene_->updateAspectRatio(width, height);
 }
 
 Window::Window() {
+    // Initialize GLFW
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -37,7 +40,6 @@ Window::Window() {
             WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT, 
             "GameEngine", nullptr, nullptr);
     glfwMakeContextCurrent(id_);
-    glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     GLenum error_code = glewInit();
     if (error_code) {
@@ -64,7 +66,7 @@ Window::Window() {
     ImGui_ImplOpenGL3_Init(glsl_version);
 
 
-    // Set cursor callback
+    // Set Size callback
     glViewport(0, 0, WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
     glfwSetWindowUserPointer(id_, (void*)this);
     glfwSetFramebufferSizeCallback(id_, Window::sizeCallback_);
@@ -129,6 +131,9 @@ Window::Window() {
             "../shaders/screen.vert", "../shaders/screen.frag");
 
     glBindVertexArray(0);
+
+    scene_ = make_unique<Scene>();
+    scene_->updateAspectRatio(width_, height_);
 }
 
 
@@ -143,11 +148,20 @@ Window::~Window() {
 void Window::keyboardEvent_(float delta) {
     if (glfwGetKey(id_, GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(id_, true);
-    } else if (glfwGetKey(id_, GLFW_KEY_F)) {
-        glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     } else if (glfwGetKey(id_, GLFW_KEY_H)) {
-        glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        if (mouseDisabled_) {
+            glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+        mouseDisabled_ = !mouseDisabled_;
     }
+    scene_->keyboardCallback(id_, delta);
+}
+
+void Window::mouseEvent_(float delta) {
+    glfwGetCursorPos(id_, &mouseX, &mouseY);
+    scene_->mouseCallback(id_);
 }
 
 
@@ -167,19 +181,26 @@ void Window::drawScreen_() {
 void Window::run() {
     float lastTime = glfwGetTime();
 
-    int i = 0;
     while (!glfwWindowShouldClose(id_)) {
         glfwPollEvents();
         float currentTime = glfwGetTime();
         float delta = currentTime - lastTime; 
 
-        keyboardEvent_(delta);
-
+        ImGuiIO& io = ImGui::GetIO();
+        if (mouseDisabled_ || !io.WantCaptureKeyboard) {
+            keyboardEvent_(delta);
+        }
+        if (!io.WantCaptureMouse) {
+            mouseEvent_(delta);
+        }
 
         glViewport(0, 0, width_, height_);
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer_);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+
+        scene_->draw();
 
         drawScreen_();
 
@@ -187,11 +208,11 @@ void Window::run() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("Hello World");
-        std::string text = "Hello test: " + std::to_string(i);
+        ImGui::Begin("Debug");
+        std::string text = std::to_string(mouseX) + "," + 
+            std::to_string(mouseY);
         ImGui::Text("%s", text.c_str());
-        if(ImGui::Button("Button Test"))
-            i++;
+        ImGui::Text("%s", scene_->debugText().c_str());
 
         ImGui::End();
 

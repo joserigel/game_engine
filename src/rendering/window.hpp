@@ -5,20 +5,28 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 
-#include "../utils/text.hpp"
 #include "shader.hpp"
 
 #define WINDOW_DEFAULT_WIDTH 800
 #define WINDOW_DEFAULT_HEIGHT 600
+
+#include "../components/scene.hpp"
 
 using namespace std;
 
 class Window {
     private:
         GLFWwindow* id_;
+        unique_ptr<Scene> scene_ = nullptr;
         void keyboardEvent_(float delta);
+        void mouseEvent_(float delta);
+
+        bool mouseDisabled_ = false;
+
         int width_ = WINDOW_DEFAULT_WIDTH;
         int height_ = WINDOW_DEFAULT_HEIGHT;
+
+        double mouseX, mouseY;
 
         unsigned int screenTexture_;
         unsigned int frameBuffer_;

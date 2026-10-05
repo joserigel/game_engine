@@ -28,6 +28,8 @@ class Mesh {
     public:
         Mesh(vector<Vertex>& vertices, vector<unsigned int>& indices);
         Mesh(aiMesh* mesh, const aiScene* scene);
+        Mesh(unsigned int vao, unsigned  int vbo, 
+            unsigned int ebo, unsigned int indicesCount);
         void draw(Shader& shader);
 };
 

@@ -4,6 +4,14 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
+Mesh::Mesh(unsigned int vao, unsigned  int vbo, 
+    unsigned int ebo, unsigned int indicesCount) {
+    vao_ = vao;
+    vbo_ = vbo;
+    ebo_ = ebo;
+    indicesCount_ = indicesCount;
+}
+
 Mesh::Mesh(aiMesh* mesh, const aiScene* scene) {
     vector<Vertex> vertices;
 

@@ -31,7 +31,9 @@ void Camera::setAspectRatio(int width, int height) {
             glm::radians(fov_), aspectRatio_, 0.1f, 100.0f);
 }
 
-void Camera::mouseCallback(double xPos, double yPos) {
+void Camera::mouseCallback(GLFWwindow* id) {
+    double xPos, yPos;
+    glfwGetCursorPos(id, &xPos, &yPos);
     if (firstMouse_) {
         lastX_ = xPos;
         lastY_ = yPos;

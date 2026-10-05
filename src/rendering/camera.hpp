@@ -1,8 +1,10 @@
 #ifndef __RENDERING_CAMERA_HPP__
 #define __RENDERING_CAMERA_HPP__
 
+
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+
 
 class Camera {
     private:
@@ -16,15 +18,15 @@ class Camera {
         float yaw_ = 0;
 
         float lookSensitivity_ = 0.1f;
-        float moveSensitivity_ = 0.01f;
+        float moveSensitivity_ = 1.0f;
 
         double lastX_;
         double lastY_;
         double firstMouse_ = true;
     public:
-        Camera(float fov, int width, int height);
+        Camera(float fov = 90.0f, int width = 100, int height = 100);
         void setAspectRatio(int width, int height);
-        void mouseCallback(double xpos, double ypos);
+        void mouseCallback(GLFWwindow* id);
         void keyboardCallback(GLFWwindow* window, float delta);
 
         glm::vec3 position();
