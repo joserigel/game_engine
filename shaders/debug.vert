@@ -12,6 +12,6 @@ uniform mat4 local;
 
 void main() {
     TexCoord = aTexCoord;
-    Normal = aNormal;
+    Normal = normalize(transpose(inverse(mat3(local))) * aNormal);
     gl_Position = projection * local * vec4(aPos, 1.0);
 }

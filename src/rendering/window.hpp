@@ -21,8 +21,6 @@ class Window {
         void keyboardEvent_(float delta);
         void mouseEvent_(float delta);
 
-        bool mouseDisabled_ = false;
-
         int width_ = WINDOW_DEFAULT_WIDTH;
         int height_ = WINDOW_DEFAULT_HEIGHT;
 

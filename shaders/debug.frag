@@ -10,6 +10,6 @@ uniform sampler2D diffuse_texture;
 void main() {
     vec3 lightDir = normalize(vec3(0.5, 1.0, 1.0));
     vec3 color = texture(diffuse_texture, TexCoord).rgb;
-    vec3 final = max(0, dot(lightDir, Normal)) * color + color * 0.1;
+    vec3 final = max(0, dot(lightDir, Normal)) * color * 0.9 + color * 0.1;
     FragColor = vec4(final, 1.0);
 }

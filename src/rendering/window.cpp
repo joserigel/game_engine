@@ -148,13 +148,6 @@ Window::~Window() {
 void Window::keyboardEvent_(float delta) {
     if (glfwGetKey(id_, GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(id_, true);
-    } else if (glfwGetKey(id_, GLFW_KEY_H)) {
-        if (mouseDisabled_) {
-            glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        } else {
-            glfwSetInputMode(id_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        }
-        mouseDisabled_ = !mouseDisabled_;
     }
     scene_->keyboardCallback(id_, delta);
 }
@@ -187,7 +180,7 @@ void Window::run() {
         float delta = currentTime - lastTime; 
 
         ImGuiIO& io = ImGui::GetIO();
-        if (mouseDisabled_ || !io.WantCaptureKeyboard) {
+        if (!io.WantCaptureKeyboard) {
             keyboardEvent_(delta);
         }
         if (!io.WantCaptureMouse) {
@@ -213,6 +206,9 @@ void Window::run() {
             std::to_string(mouseY);
         ImGui::Text("%s", text.c_str());
         ImGui::Text("%s", scene_->debugText().c_str());
+        if (ImGui::Button("Fix Collision")) {
+            scene_->fixCollision();
+        }
 
         ImGui::End();
 

@@ -13,8 +13,8 @@ void GameObject::draw(Shader& shader) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_.id());
     shader.setInt("diffuse_texture", 0);
-    glm::mat4 local = glm::mat4_cast(rotation) * glm::scale(glm::mat4(1.0f), size) ;
-    local = glm::translate(local, position);
+    glm::mat4 local = glm::mat4_cast(rotation) * glm::scale(glm::mat4(1.0f), size);
+    local = glm::translate(glm::mat4(1.f), position) * local;
     shader.setMat4("local", local);
     mesh_.draw(shader);
 }

@@ -22,6 +22,7 @@ class Scene {
         Scene();
         void tick();
         void draw();
+        void fixCollision();
         string debugText();
 
         void mouseCallback(GLFWwindow* id);

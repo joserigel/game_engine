@@ -1,13 +1,16 @@
 # Custom Game Engine
 Name WIP
 
-### Build and Run
+## Build and Run
 ```
 mkdir build
 cd build
 cmake --build ..
 ./GameEngine
 ```
+
+## Dependencies
+
 ### Usage of Assimp
 The `assimp` library is fetched using their Github page with CMake,
 I put it here so that it's not a hassle to individually download and install,
@@ -23,6 +26,8 @@ Loading textures uses [stb](https://github.com/nothings/stb?tab=readme-ov-file)
 
 use these installations for Ubuntu, otherwise provide your own :D
 
+## Development Guide
+
 #### Texture Conventions
 
 Currently, the supported texture types are
@@ -37,4 +42,9 @@ to use the different types of textures. You can see usage example in the
 | SPECULAR     | specular_texture           | 1     |
 | NORMALS      | normals_texture            | 2     |
 | HEIGHT       | height_texture             | 3     |
+
+## References
+[Physics Engine](https://www.amazon.de/-/en/Game-Physics-Engine-Development-Commercial-Grade/dp/0123819768)
+[Collision](https://www.amazon.de/-/en/Real-Time-Collision-Detection-Interactive-Technology/dp/1558607323)
+[OpenGL](https://learnopengl.com/)
 
