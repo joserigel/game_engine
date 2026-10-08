@@ -3,6 +3,7 @@
 
 #include "gameobject.hpp"
 #include "../rendering/camera.hpp"
+#include "../utils/debugcube.hpp"
 
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -16,6 +17,7 @@ class Scene {
         float tickRate_;
         float lastUpdate_;
 
+        DebugCube debugCube_;
         Shader shader_;
         
     public:

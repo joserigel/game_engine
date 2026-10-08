@@ -9,6 +9,9 @@ Scene::Scene()
 {
     objects_.push_back(GameObject::cube());
     objects_.push_back(GameObject::cube());
+
+    objects_[0].position += glm::vec3(1.0f);
+    objects_[0].size = glm::vec3(0.5f);
 }
 
 void Scene::updateAspectRatio(int width, int height) {
@@ -104,12 +107,10 @@ void tick() {
 void Scene::draw() {
     shader_.use();
     auto projection = camera_.matrix();
-    glEnable(GL_DEPTH_TEST);
     shader_.setMat4("projection", projection);
     for (auto object : objects_) {
         object.draw(shader_);
     }
-    glDisable(GL_DEPTH_TEST);
 
     Collider::Contact contact;
     bool collides = Collider::getContact(
@@ -120,5 +121,19 @@ void Scene::draw() {
         auto mat = camera_.matrix();
         auto a = contact.point;
         auto b = contact.point + (contact.normal*contact.penetration);
+        debugCube_.draw(mat, a, glm::vec3(1.0));
+        debugCube_.drawLine(projection, a, b, glm::vec3(1.0));
+        debugCube_.draw(mat, b, glm::vec3(1.0, 0.0, 0.0));
     }
+
+    debugCube_.drawLine(projection, 
+            glm::vec3(0.0f), 
+            glm::vec3(100.0f, 0.f, 0.f), glm::vec3(1.0f, 0.0f, 0.0f));
+    debugCube_.drawLine(projection, 
+            glm::vec3(0.0f), 
+            glm::vec3(0.0f, 100.f, 0.f), glm::vec3(0.0f, 1.0f, 0.0f));
+    debugCube_.drawLine(projection, 
+            glm::vec3(0.0f), 
+            glm::vec3(0.0f, 0.f, 100.f), glm::vec3(0.0f, 0.0f, 1.0f));
+
 }
